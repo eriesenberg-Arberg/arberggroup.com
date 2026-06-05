@@ -1170,22 +1170,22 @@
       </div>
 
       <div class="contact-form">
-        <form onsubmit="handleSubmit(event)">
+        <form action="https://formspree.io/f/maqzqqwe" method="POST" onsubmit="handleSubmit(event)">
           <div class="form-group">
             <label class="form-label">Your name</label>
-            <input class="form-input" type="text" placeholder="Full name" required />
+            <input class="form-input" type="text" name="name" placeholder="Full name" required />
           </div>
           <div class="form-group">
             <label class="form-label">Email address</label>
-            <input class="form-input" type="email" placeholder="you@example.com" required />
+            <input class="form-input" type="email" name="email" placeholder="you@example.com" required />
           </div>
           <div class="form-group">
             <label class="form-label">Subject</label>
-            <input class="form-input" type="text" placeholder="What is this regarding?" required />
+            <input class="form-input" type="text" name="subject" placeholder="What is this regarding?" required />
           </div>
           <div class="form-group">
             <label class="form-label">Message</label>
-            <textarea class="form-textarea" placeholder="Your message…" required></textarea>
+            <textarea class="form-textarea" name="message" placeholder="Your message…" required></textarea>
           </div>
           <button type="submit" class="form-submit">
             <span class="form-submit-line"></span>
@@ -1228,12 +1228,31 @@
     }
     initSlideshows();
 
-    function handleSubmit(e) {
+    async function handleSubmit(e) {
       e.preventDefault();
-      const btn = e.target.querySelector('.form-submit');
-      btn.innerHTML = '<span class="form-submit-line"></span> Sent — we\'ll be in touch.';
-      btn.style.color = 'var(--offwhite)';
+      const form = e.target;
+      const btn = form.querySelector('.form-submit');
+      btn.innerHTML = '<span class="form-submit-line"></span> Sending…';
       btn.disabled = true;
+      try {
+        const res = await fetch(form.action, {
+          method: 'POST',
+          body: new FormData(form),
+          headers: { 'Accept': 'application/json' }
+        });
+        if (res.ok) {
+          btn.innerHTML = '<span class="form-submit-line"></span> Sent — we\'ll be in touch.';
+          btn.style.color = 'var(--offwhite)';
+          form.reset();
+        } else {
+          btn.innerHTML = '<span class="form-submit-line"></span> Something went wrong — email us directly.';
+          btn.style.color = 'var(--gold)';
+          btn.disabled = false;
+        }
+      } catch {
+        btn.innerHTML = '<span class="form-submit-line"></span> Something went wrong — email us directly.';
+        btn.disabled = false;
+      }
     }
 
     // Mobile nav toggle
@@ -1273,26 +1292,4 @@
       .vertical-detail { grid-column: 2; }
       .vertical-item:hover { margin: 0; padding: 40px 0; background: transparent; }
 
-      .principles { padding: 64px 24px; }
-      .principles-grid { grid-template-columns: 1fr 1fr; gap: 28px; }
-
-      .markets { padding: 64px 24px; }
-      .markets-grid { grid-template-columns: 1fr; }
-
-      .re-approach { grid-template-columns: 1fr; gap: 32px; padding: 64px 24px; }
-      .inv-philosophy { grid-template-columns: 1fr; gap: 32px; padding: 64px 24px; }
-      .inv-tenets { padding: 64px 24px; }
-      .inv-tenets-grid { grid-template-columns: 1fr; gap: 32px; }
-
-      .contact-body { grid-template-columns: 1fr; gap: 48px; padding: 64px 24px; }
-      .contact-form { padding: 32px 24px; }
-
-      footer { flex-direction: column; gap: 16px; text-align: center; padding: 40px 24px; }
-    }
-
-    .nav-hamburger { display: none; }
-    @media (max-width: 900px) { .nav-hamburger { display: flex; } }
-  </style>
-
-</body>
-</html>
+      .pr
